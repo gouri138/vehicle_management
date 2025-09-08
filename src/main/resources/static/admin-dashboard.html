@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,5 +34,67 @@
         </div>
     </div>
     <script src="app.js"></script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — Car Maintenance System</title>
+  <meta name="description" content="Manage customers and appointments for the car maintenance system." />
+  <link rel="canonical" href="https://example.com/admin-dashboard.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand"><span class="brand-icon">🚗</span><span class="brand-name">CarCare</span></div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="login.html" class="btn btn-outline btn-sm">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page">
+      <div class="container">
+        <h1 class="h2 mb-2">Admin Dashboard</h1>
+        <div class="grid-2">
+          <div class="card animate-fade-in">
+            <div class="card-header">
+              <h2 class="h3">Manage Customers</h2>
+              <button id="loadCustomers" class="btn btn-secondary btn-sm">Load Customers</button>
+            </div>
+            <div id="customersList" class="list mt-2"></div>
+          </div>
+
+          <div class="card animate-fade-in">
+            <div class="card-header">
+              <h2 class="h3">Manage Appointments</h2>
+              <button id="loadAppointments" class="btn btn-primary btn-sm">Load Appointments</button>
+            </div>
+            <div id="appointmentsList" class="list mt-2"></div>
+            <div id="appointmentActions" class="mt-2"></div>
+            <div class="legend mt-2">
+              <span class="badge badge-warning">Pending</span>
+              <span class="badge badge-success">Confirmed</span>
+              <span class="badge badge-danger">Rejected</span>
+              <span class="badge badge-info">Service Done</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script defer src="app.js"></script>
 </body>
 </html>

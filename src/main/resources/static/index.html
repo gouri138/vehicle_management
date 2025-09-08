@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -24,5 +24,83 @@
         </div>
     </div>
     <script src="app.js"></script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Car Maintenance Management System</title>
+  <meta name="description" content="Book vehicle service appointments, manage customers, and track statuses." />
+  <link rel="canonical" href="https://example.com/" />
+  <meta property="og:title" content="Car Maintenance Management System" />
+  <meta property="og:description" content="Book vehicle service appointments, manage customers, and track statuses." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🚗</span>
+        <span class="brand-name">CarCare</span>
+      </div>
+      <nav class="nav">
+        <a href="login.html">Login</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+        <a href="admin-dashboard.html" class="btn btn-outline btn-sm">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="card card-hero animate-fade-in">
+          <h1 class="h1">Car Maintenance Management System</h1>
+          <p class="lead">Book services, track appointments, and manage customers with a sleek, modern UI.</p>
+          <div class="cta-row">
+            <a href="login.html" class="btn btn-primary btn-lg">Login</a>
+            <a href="register.html" class="btn btn-secondary btn-lg">Register</a>
+            <a href="admin-dashboard.html" class="btn btn-outline btn-lg">Admin Dashboard</a>
+          </div>
+        </div>
+
+        <div class="features">
+          <article class="feature-card">
+            <h3>Fast Booking</h3>
+            <p>Schedule your car service in seconds with a streamlined form.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Real-time Status</h3>
+            <p>Admin can accept, reject, or mark service done instantly.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Secure Access</h3>
+            <p>Separate user and admin flows to keep data safe.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> CarCare. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script defer src="app.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

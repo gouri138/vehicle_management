@@ -49,7 +49,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:8081") // Adjusted to match backend port
+                    .allowedOrigins("http://localhost:8081", "http://127.0.0.1:5500") // Allow frontend origin
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*");
             }
