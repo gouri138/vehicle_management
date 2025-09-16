@@ -14,6 +14,7 @@ public class Customer {
 
     private String name;
     private String phone;
+    @Column(unique = true)
     private String email;
     private String address;
     private String password; // For authentication

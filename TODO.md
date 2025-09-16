@@ -1,21 +1,5 @@
-# Car Maintenance Management System - Pending Tasks
+# TODO: Start Car Maintenance Project
 
-## Database Migration
-- [x] Add PostgreSQL dependency to pom.xml
-- [x] Update application.properties for PostgreSQL configuration
-
-## Security Configuration
-- [x] Add CORS configuration to SecurityConfig.java
-
-## Frontend Development
-- [x] Create index.html (main page)
-- [x] Create login.html (customer login form)
-- [x] Create register.html (customer registration form)
-- [x] Create admin-dashboard.html (admin dashboard)
-- [x] Create app.js (JavaScript for API integration)
-
-## Testing and Integration
-- [x] Create PostgreSQL database 'car_manage_db' manually
-- [x] Test PostgreSQL connection
-- [ ] Test frontend-backend integration
-- [ ] Ensure CORS is working for frontend access
+- [x] Build the project using Maven (mvn clean install)
+- [x] Run the Spring Boot application (mvn spring-boot:run)
+- [ ] Verify the application is running by accessing http://localhost:8080

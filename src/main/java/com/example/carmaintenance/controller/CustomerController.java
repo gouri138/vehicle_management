@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,8 +35,13 @@ public class CustomerController {
 
     // Customer registration
     @PostMapping("/register")
-    public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) {
-        return ResponseEntity.ok(customerService.registerCustomer(customer));
+    public ResponseEntity<?> registerCustomer(@RequestBody Customer customer) {
+        try {
+            Customer registeredCustomer = customerService.registerCustomer(customer);
+            return ResponseEntity.ok(registeredCustomer);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     // Customer login (simplified, should be enhanced with JWT or session)
@@ -75,6 +81,12 @@ public class CustomerController {
         appointment.setCustomer(new Customer());
         appointment.getCustomer().setCustomerId(customerId);
 
+        // Validate car name and model
+        if (appointment.getCarName() == null || appointment.getCarName().isEmpty() ||
+            appointment.getCarModel() == null || appointment.getCarModel().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         appointment.setStatus("Pending");
         return ResponseEntity.ok(appointmentService.bookAppointment(appointment));
     }
@@ -98,5 +110,19 @@ public class CustomerController {
     public ResponseEntity<String> downloadInvoice(@PathVariable Long serviceId) {
         // Placeholder for invoice download logic
         return ResponseEntity.ok("Invoice for service id: " + serviceId);
+    }
+
+    // Get car models
+    @GetMapping("/carmodels")
+    public ResponseEntity<Map<String, List<String>>> getCarModels() {
+        Map<String, List<String>> carModels = carService.getCarModels();
+        return ResponseEntity.ok(carModels);
+    }
+
+    // Get service types
+    @GetMapping("/servicetypes")
+    public ResponseEntity<List<String>> getServiceTypes() {
+        List<String> serviceTypes = serviceService.getServiceTypes();
+        return ResponseEntity.ok(serviceTypes);
     }
 }

@@ -129,6 +129,33 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
         appointment.setStatus(status);
+
+        // If status is "Service Done", calculate next service date or km
+        if ("Service Done".equalsIgnoreCase(status)) {
+            Integer currentKm = appointment.getCurrentKm();
+            String serviceType = appointment.getServiceType();
+            java.time.LocalDate serviceDate = appointment.getAppointmentDate();
+
+            // Calculate next service info using ServiceService
+            java.util.Map<String, Object> nextService = null;
+            try {
+                nextService = serviceService.calculateNextService(serviceType, currentKm, serviceDate);
+            } catch (Exception e) {
+                // Log error or handle gracefully
+            }
+
+            if (nextService != null) {
+                if (nextService.containsKey("nextDate")) {
+                    appointment.setNextServiceDate((java.time.LocalDate) nextService.get("nextDate"));
+                    appointment.setNextServiceKm(null);
+                } else if (nextService.containsKey("nextKm")) {
+                    appointment.setNextServiceKm((Integer) nextService.get("nextKm"));
+                    appointment.setNextServiceDate(null);
+                }
+                appointment.setNextServiceType(serviceType);
+            }
+        }
+
         return ResponseEntity.ok(appointmentService.updateAppointment(appointment));
     }
 }

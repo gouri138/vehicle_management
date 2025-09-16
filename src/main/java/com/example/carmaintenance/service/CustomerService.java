@@ -19,6 +19,9 @@ public class CustomerService {
     private PasswordEncoder passwordEncoder;
 
     public Customer registerCustomer(Customer customer) {
+        if (customerRepository.findByEmail(customer.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         return customerRepository.save(customer);
     }

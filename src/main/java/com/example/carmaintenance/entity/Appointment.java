@@ -24,6 +24,11 @@ public class Appointment {
     private String description;
     private String status; // e.g., Pending, Confirmed, Service Done
 
+    private Integer currentKm;
+    private LocalDate nextServiceDate;
+    private Integer nextServiceKm;
+    private String nextServiceType;
+
     // Getters and Setters
     public Long getAppointmentId() { return appointmentId; }
     public void setAppointmentId(Long appointmentId) { this.appointmentId = appointmentId; }
@@ -51,4 +56,16 @@ public class Appointment {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public Integer getCurrentKm() { return currentKm; }
+    public void setCurrentKm(Integer currentKm) { this.currentKm = currentKm; }
+
+    public LocalDate getNextServiceDate() { return nextServiceDate; }
+    public void setNextServiceDate(LocalDate nextServiceDate) { this.nextServiceDate = nextServiceDate; }
+
+    public Integer getNextServiceKm() { return nextServiceKm; }
+    public void setNextServiceKm(Integer nextServiceKm) { this.nextServiceKm = nextServiceKm; }
+
+    public String getNextServiceType() { return nextServiceType; }
+    public void setNextServiceType(String nextServiceType) { this.nextServiceType = nextServiceType; }
 }

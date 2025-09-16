@@ -82,6 +82,16 @@ label{ font-weight:600; }
 .form-control::placeholder{ color: rgba(255,255,255,0.5); }
 .form-control:focus{ border-color: var(--primary); box-shadow: 0 0 0 4px var(--ring); background: rgba(255,255,255,0.06); }
 
+select.form-control {
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+select.form-control option {
+  color: var(--text);
+  background-color: var(--bg-2);
+}
+
 .btn{
   --_bg: var(--secondary);
   --_fg: var(--text);
@@ -141,3 +151,13 @@ label{ font-weight:600; }
 .dropdown-menu a{ display:block; padding:10px 12px; color: var(--text); text-decoration:none; }
 .dropdown-menu a:hover{ background: rgba(255,255,255,0.06); }
 .hint{ color: var(--muted); font-size: 12px; }
+
+select.form-control {
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+select.form-control option {
+  color: var(--text);
+  background-color: var(--bg-2);
+}

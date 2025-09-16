@@ -256,6 +256,51 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     document.getElementById('customerId').value = customerIdStored;
 
+    // Load car names and models from backend
+    let carModelsMap = {};
+    fetch(`${API_BASE_URL}/customer/carmodels`)
+      .then(response => response.json())
+      .then(data => {
+        carModelsMap = data;
+        const carNameSelect = document.getElementById('carName');
+        for (const carName in carModelsMap) {
+          const option = document.createElement('option');
+          option.value = carName;
+          option.textContent = carName;
+          carNameSelect.appendChild(option);
+        }
+      });
+
+    // Load service types from backend
+    let serviceTypes = [];
+    fetch(`${API_BASE_URL}/customer/servicetypes`)
+      .then(response => response.json())
+      .then(data => {
+        serviceTypes = data;
+        const serviceTypeSelect = document.getElementById('serviceType');
+        serviceTypes.forEach(service => {
+          const option = document.createElement('option');
+          option.value = service;
+          option.textContent = service;
+          serviceTypeSelect.appendChild(option);
+        });
+      });
+
+    // Update models dropdown when car name changes
+    document.getElementById('carName').addEventListener('change', function () {
+      const selectedCar = this.value;
+      const modelSelect = document.getElementById('carModel');
+      modelSelect.innerHTML = '<option value="">Select a model</option>';
+      if (selectedCar && carModelsMap[selectedCar]) {
+        carModelsMap[selectedCar].forEach(model => {
+          const option = document.createElement('option');
+          option.value = model;
+          option.textContent = model;
+          modelSelect.appendChild(option);
+        });
+      }
+    });
+
     // Submit
     appointmentForm.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -263,6 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const carName = document.getElementById('carName').value;
       const carModel = document.getElementById('carModel').value;
       const serviceType = document.getElementById('serviceType').value;
+      const currentKm = document.getElementById('currentKm').value;
       const appointmentDate = document.getElementById('appointmentDate').value;
       const time = document.getElementById('time').value;
       const description = document.getElementById('description').value;
@@ -272,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
         carName,
         carModel,
         serviceType,
+        currentKm: parseInt(currentKm),
         appointmentDate,
         time,
         description
@@ -287,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('message').innerHTML = '<div class="alert alert-success">Appointment booked successfully.</div>';
             appointmentForm.reset();
             loadUserAppointments(customerId);
+            loadUserReminders(customerId);
           } else {
             throw new Error('Failed to book appointment.');
           }
@@ -298,6 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load user's appointments on page load
     loadUserAppointments(customerIdStored);
+    loadUserReminders(customerIdStored);
   }
 });
 
@@ -324,12 +373,15 @@ function loadAppointments() {
                 : status === 'Service Done' ? 'badge-info'
                 : 'badge-warning';
 
+              const carName = appointment.carName || (appointment.car ? appointment.car.model : 'N/A');
+
               return `
               <li class="list-item">
                 <div>
                   <div><strong>${appointment.appointmentDate}</strong> • <span class="hint">${appointment.time || ''}</span></div>
                   <div class="hint">${appointment.description || ''}</div>
                   <div class="hint">Customer: ${customerName}</div>
+                  <div class="hint">Car: ${carName}</div>
                 </div>
                 <div class="actions">
                   <span class="badge ${badgeClass}">${status}</span>
@@ -398,10 +450,18 @@ function register(name, email, password, phone) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password, phone }),
   })
-    .then(response => response.json())
-    .then(data => {
-      const box = document.getElementById('message');
-      if (box) box.innerHTML = `<div class="alert alert-success">${data.message || 'Registration successful'}</div>`;
+    .then(response => {
+      if (response.ok) {
+        return response.json().then(data => {
+          const box = document.getElementById('message');
+          if (box) box.innerHTML = `<div class="alert alert-success">${data.message || 'Registration successful'}</div>`;
+        });
+      } else {
+        return response.json().then(data => {
+          const box = document.getElementById('message');
+          if (box) box.innerHTML = `<div class="alert alert-danger">${data.error || 'Registration failed'}</div>`;
+        });
+      }
     })
     .catch(error => {
       const box = document.getElementById('message');
@@ -441,10 +501,19 @@ function loadUserAppointments(customerId) {
                 : status === 'Rejected' ? 'badge-danger'
                 : status === 'Service Done' ? 'badge-info'
                 : 'badge-warning';
+
+              let reminder = '';
+              if (appointment.nextServiceDate) {
+                reminder = `<div class="hint"><strong>Next Service Reminder:</strong> ${appointment.nextServiceType} on ${appointment.nextServiceDate}</div>`;
+              } else if (appointment.nextServiceKm) {
+                reminder = `<div class="hint"><strong>Next Service Reminder:</strong> ${appointment.nextServiceType} after ${appointment.nextServiceKm} km</div>`;
+              }
+
               return `<li class="list-item">
                 <div>
                   <div><strong>Car:</strong> ${appointment.car ? appointment.car.model : (appointment.carModel || 'N/A')}</div>
                   <div class="hint"><strong>Service:</strong> ${appointment.serviceType} • <strong>Date:</strong> ${appointment.appointmentDate} • <strong>Time:</strong> ${appointment.time || '-'}</div>
+                  ${reminder}
                 </div>
                 <div><span class="badge ${badgeClass}">${status}</span></div>
               </li>`;
@@ -458,6 +527,50 @@ function loadUserAppointments(customerId) {
     .catch(error => {
       const box = document.getElementById('appointmentsList');
       if (box) box.innerHTML = `<div class="alert alert-danger">Failed to load appointments: ${error.message}</div>`;
+    });
+}
+
+function loadUserReminders(customerId) {
+  fetch(`${API_BASE_URL}/customer/${customerId}/appointments`, { method: 'GET' })
+    .then(response => response.json())
+    .then(data => {
+      const list = document.getElementById('remindersList');
+      if (!list) return;
+      if (Array.isArray(data)) {
+        const reminders = data.filter(appointment => appointment.nextServiceDate || appointment.nextServiceKm);
+        if (reminders.length > 0) {
+          list.innerHTML =
+            '<ul class="list-ul">' +
+            reminders
+              .map(appointment => {
+                let reminderText = '';
+                if (appointment.nextServiceDate) {
+                  reminderText = `${appointment.nextServiceType} on ${appointment.nextServiceDate}`;
+                } else if (appointment.nextServiceKm) {
+                  reminderText = `${appointment.nextServiceType} after ${appointment.nextServiceKm} km`;
+                }
+
+                return `<li class="list-item">
+                  <div>
+                    <div><strong>Car:</strong> ${appointment.car ? appointment.car.model : (appointment.carModel || 'N/A')}</div>
+                    <div class="hint"><strong>Next Service:</strong> ${reminderText}</div>
+                    <div class="hint">Last Service: ${appointment.serviceType} on ${appointment.appointmentDate}</div>
+                  </div>
+                  <div><span class="badge badge-info">Reminder</span></div>
+                </li>`;
+              })
+              .join('') +
+            '</ul>';
+        } else {
+          list.innerHTML = `<div class="alert alert-info">No upcoming service reminders.</div>`;
+        }
+      } else {
+        list.innerHTML = `<div class="alert alert-danger">Failed to load reminders</div>`;
+      }
+    })
+    .catch(error => {
+      const box = document.getElementById('remindersList');
+      if (box) box.innerHTML = `<div class="alert alert-danger">Failed to load reminders: ${error.message}</div>`;
     });
 }
 
